@@ -8,6 +8,7 @@ const Navbar = ({ isAuth }) => {
       {isAuth ? (
         <>
           <Link  to="/logout">ログアウト</Link>
+          <p className="">でログイン中</p>
         </>
       ) : (
         <>
