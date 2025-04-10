@@ -30,6 +30,7 @@ const Home = ({ isAuth }) => {
     const hours = nowDate.getHours();
     let clockInMinutes = nowDate.getMinutes() + hours * 60;
 
+    // 出勤時間の調整
     if (clockInMinutes >= 540 && clockInMinutes <= 585) {
       clockInMinutes = 555;
     } else if (clockInMinutes >= 630 && clockInMinutes <= 675) {
@@ -38,6 +39,7 @@ const Home = ({ isAuth }) => {
       clockInMinutes = 555;
     }
 
+    // 出勤データ登録
     try {
       await setDoc(attendanceCollectionRef, {
         date: date,
@@ -56,12 +58,14 @@ const Home = ({ isAuth }) => {
     const date = nowDate.toLocaleDateString("sv-SE");
     const attendanceCollectionRef = doc(db, "users", uid, "attendance", date);
 
+    // 出勤時間の取得
     const attendanceData = await getDoc(attendanceCollectionRef);
     const clockInMinutes = attendanceData.data().clockIn;
 
     const hours = nowDate.getHours();
     let clockOutMinutes = nowDate.getMinutes() + hours * 60;
 
+    // 退勤時間の調整
     if (clockOutMinutes >= 630 && clockOutMinutes <= 675) {
       clockOutMinutes = 645;
     } else if (clockOutMinutes >= 720 && clockOutMinutes <= 765) {
@@ -71,7 +75,15 @@ const Home = ({ isAuth }) => {
     }
 
     const workMinutes = clockOutMinutes - clockInMinutes;
+    const countClass = workMinutes / 90;
 
+    // TODO
+    // classWage の取得
+    const userRef = doc(db, "users", uid);
+    const userData = await getDoc(userRef);
+    console.log(userData.classWage)
+
+    // 退勤データ登録
     try {
       await updateDoc(attendanceCollectionRef, {
         clockOut: clockOutMinutes,
