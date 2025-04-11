@@ -74,20 +74,22 @@ const Home = ({ isAuth }) => {
       clockOutMinutes = 735;
     }
 
+    // 給料の計算
     const workMinutes = clockOutMinutes - clockInMinutes;
     const countClass = workMinutes / 90;
 
-    // TODO
-    // classWage の取得
-    const userRef = doc(db, "users", uid);
-    const userData = await getDoc(userRef);
-    console.log(userData.classWage)
+    const userDocRef = doc(db, "users", uid);
+    const userData = await getDoc(userDocRef);
+    const classWage = userData.data().classWage;
+    const salary = countClass * classWage;
 
     // 退勤データ登録
     try {
       await updateDoc(attendanceCollectionRef, {
         clockOut: clockOutMinutes,
-        workMinutes: workMinutes
+        workMinutes: workMinutes,
+        countClass: countClass,
+        salary: salary
       });
       console.log("succes");
     } catch (error) {
