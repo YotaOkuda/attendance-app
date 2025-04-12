@@ -7,6 +7,7 @@ const Navbar = ({ isAuth }) => {
       <Link className="no-underline transition-all" to="/">ホーム</Link>
       {isAuth ? (
         <>
+          <Link to="/summary">集計</Link>
           <Link  to="/logout">ログアウト</Link>
           <p className="">でログイン中</p>
         </>
