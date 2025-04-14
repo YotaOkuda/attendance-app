@@ -1,12 +1,27 @@
-import React from "react";
+import firebase from "firebase/compat/app";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../firebase";
 
 const Navbar = ({ isAuth }) => {
   const location = useLocation();
+  const [photoURL, setPhotURL] = useState();
 
   const isActive = (path) => {
     return location.pathname === path;
   };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+      const photoURL = user.photoURL;
+      setPhotURL(photoURL);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
 
   return (
     <nav className="bg-white shadow-lg">
@@ -41,7 +56,7 @@ const Navbar = ({ isAuth }) => {
                   }`}
                   to="/summary"
                 >
-                  Monthly Summary
+                  Summary
                 </Link>
                 <Link
                   className={`text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-lg font-medium  ${
@@ -53,6 +68,8 @@ const Navbar = ({ isAuth }) => {
                 >
                   Logout
                 </Link>
+                <img src={photoURL}
+                className="h-10 w-10 rounded-full" />
               </>
             ) : (
               <Link
